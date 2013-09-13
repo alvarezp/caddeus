@@ -23,6 +23,8 @@ ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
 # ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
 
+.DEFAULT_GOAL := all
+
 .PHONY : all
 all: $(APP) $(APP_TESTS_TS)
 	@echo "Build completed successfully."
