@@ -55,6 +55,10 @@ $(APP): $(ALL_OBJS) $(TESTS)
 	@echo -e '\n'===== $@, building test...
 	gcc -o $*.t $^
 
+%.t: %.to
+	@echo -e '\n'===== $@, building test...
+	gcc -o $*.t $^
+
 .PHONY : clean
 clean:
 	@echo -e '\n'===== Cleaning...
