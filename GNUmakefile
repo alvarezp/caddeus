@@ -16,6 +16,7 @@ OBJS_TDD = hello.o
 OBJS_NO_TDD = main.o
 
 apptest1.t: apptest2.to
+apptest1_TEST_LIBS=-lm
 
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
