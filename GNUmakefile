@@ -41,7 +41,15 @@ $(APP): $(ALL_OBJS) $(TESTS)
 	@echo -e '\n'===== $@, testing...
 	./$*.t && touch $*.ts;
 
+%.tts: %.tt $(APP)
+	@echo -e '\n'===== $@, testing...
+	./$*.tt && touch $*.tts
+
 %.t.c:
+	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
+	@false
+
+%.tt:
 	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
 	@false
 
@@ -68,5 +76,6 @@ clean:
 	rm -f *.t
 	rm -f *.to
 	rm -f *.ts
+	rm -f *.tts
 
 

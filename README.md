@@ -10,6 +10,7 @@ Features and characteristics
 * Have one test file per module. For a module.o target, a test named
   module.t.c can exist. A module.t binary will be compiled and run.
   If succeeds, a timestamp file module.ts file will be generated.
+* Allow usage of scripted tests under the .tt extension.
 * Dependency chain for modules:
   - module.ts: module.t
   - module.t: module.to module.o
