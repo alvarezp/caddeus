@@ -31,3 +31,5 @@ Features and characteristics
 * Lower targets depend on GNUmakefile. This causes the whole project
   rebuild if GNUmakefile changes. This ensures that a change on
   GNUmakefile does not break project build.
+* All modifiable parts are together in the top section of the GNUmakefile
+  to avoid confusion.

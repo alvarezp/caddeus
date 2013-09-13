@@ -10,13 +10,18 @@ CFLAGS += -Wall -std=c99 -pedantic-errors -fPIC -ggdb
 
 APP = app
 APP_TESTS = apptest1.t
-APP_TESTS_TS = $(APP_TESTS:.tt=.tts) $(APP_TESTS:.t=.ts)
+LIBS =
 
 OBJS_TDD = hello.o
 OBJS_NO_TDD = main.o
-ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
+
+# ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
+
+APP_TESTS_TS = $(APP_TESTS:.tt=.tts) $(APP_TESTS:.t=.ts)
 TESTS = $(OBJS_TDD:.o=.ts)
-LIBS =
+ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
+
+# ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
 
 .PHONY : all
 all: $(APP) $(APP_TESTS_TS)
