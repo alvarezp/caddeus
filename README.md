@@ -19,6 +19,8 @@ Features and characteristics
   - module.o: module.c GNUmakefile
 * Dependency chain for the final binary:
   - app: all-objects all-test-timestamps
+* Dependencies for the compilation process:
+  - all: app app-tests
 * CFLAGS are tight. Compiler errors usually indicate programming
   mistakes and should now let compilation be successful.
 * Allows testing to be required for some but not all modules by
