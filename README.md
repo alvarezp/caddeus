@@ -11,6 +11,7 @@ Features and characteristics
   module.t.c can exist. A module.t binary will be compiled and run.
   If succeeds, a timestamp file module.ts file will be generated.
 * Allow usage of scripted tests under the .tt extension.
+* Allows specification of manual tests to run after full build.
 * Dependency chain for modules:
   - module.ts: module.t
   - module.t: module.to module.o

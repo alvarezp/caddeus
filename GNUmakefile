@@ -9,6 +9,9 @@ CFLAGS += -Wall -std=c99 -pedantic-errors -fPIC -ggdb
 .SECONDARY:
 
 APP = app
+APP_TESTS = apptest1.t
+APP_TESTS_TS = $(APP_TESTS:.tt=.tts) $(APP_TESTS:.t=.ts)
+
 OBJS_TDD = hello.o
 OBJS_NO_TDD = main.o
 ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
@@ -16,7 +19,7 @@ TESTS = $(OBJS_TDD:.o=.ts)
 LIBS =
 
 .PHONY : all
-all: $(APP)
+all: $(APP) $(APP_TESTS_TS)
 
 # Pull in dependency info for existing .o and .t files.
 -include $(ALL_OBJS:.o=.d)
