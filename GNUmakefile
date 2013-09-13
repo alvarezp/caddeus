@@ -15,6 +15,8 @@ LIBS =
 OBJS_TDD = hello.o
 OBJS_NO_TDD = main.o
 
+apptest1.t: apptest2.to
+
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
 APP_TESTS_TS = $(APP_TESTS:.tt=.tts) $(APP_TESTS:.t=.ts)
