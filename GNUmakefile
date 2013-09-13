@@ -20,6 +20,7 @@ LIBS =
 
 .PHONY : all
 all: $(APP) $(APP_TESTS_TS)
+	@echo "Build completed successfully."
 
 # Pull in dependency info for existing .o and .t files.
 -include $(ALL_OBJS:.o=.d)
