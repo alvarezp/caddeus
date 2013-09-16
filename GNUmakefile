@@ -17,14 +17,22 @@ OBJS_NO_TDD = main.o
 
 apptest1.t: apptest2.to
 apptest1_TEST_LIBS=-lm
+apptest1_TIMEOUT=1s
 
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
+
+DEFAULT_TIMEOUT=5s
 
 APP_TESTS_TS = $(APP_TESTS:.tt=.tts) $(APP_TESTS:.t=.ts)
 TESTS = $(OBJS_TDD:.o=.ts)
 ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
 # ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
+
+ifndef DEFAULT_TIMEOUT
+	#Set a DEFAULT_TIMEOUT if user did not set it or erased it.
+	DEFAULT_TIMEOUT=5s
+endif
 
 .DEFAULT_GOAL := all
 
@@ -52,12 +60,14 @@ $(APP): $(ALL_OBJS) $(TESTS)
 	gcc $(CFLAGS) -MM -MP -MT $*.o $*.c > $*.d
 
 %.ts: %.t
-	@echo -e '\n'===== $@, testing...
-	./$*.t && touch $*.ts;
+	@$(eval TIMEOUT=$(firstword $($(@:.ts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
+	@echo -e '\n'===== $@, running test with a $(TIMEOUT) timeout...
+	@timeout $(TIMEOUT) ./$*.t && touch $*.ts
 
 %.tts: %.tt $(APP)
-	@echo -e '\n'===== $@, testing...
-	./$*.tt && touch $*.tts
+	@$(eval TIMEOUT=$(firstword $($(@:.tts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
+	@echo -e '\n'===== $@, running test with a $(TIMEOUT) timeout...
+	@timeout $(TIMEOUT) ./$*.tt && touch $*.tts
 
 %.t.c:
 	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
