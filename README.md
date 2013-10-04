@@ -1,5 +1,5 @@
-caddeus-framework
-=================
+caddeus
+=======
 
 This is a sample C project with an already prepared GNUmakefile for TDD
 and strict compilation.
