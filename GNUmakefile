@@ -21,8 +21,6 @@ apptest1_TIMEOUT_MULT=2
 
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
-DEFAULT_TIMEOUT=5s
-
 APP_TESTS_TS = $(APP_TESTS:.tt=.tts) $(APP_TESTS:.t=.ts)
 TESTS = $(OBJS_TDD:.o=.ts)
 ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
@@ -37,9 +35,9 @@ decode = $(words $1)
 encode = $(wordlist 1,$1,$(input_int))
 multiply = $(call decode,$(foreach a,$(call encode,$1),$(call encode,$2)))
 
-ifndef DEFAULT_TIMEOUT
-	#Set a DEFAULT_TIMEOUT if user did not set it or erased it.
-	DEFAULT_TIMEOUT=5s
+DEFAULT_TIMEOUT=0
+ifdef TIMEOUT
+	DEFAULT_TIMEOUT=$(TIMEOUT)
 endif
 
 .DEFAULT_GOAL := all
