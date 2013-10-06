@@ -11,6 +11,10 @@ bool hello_me_test() {
 }
 
 int main() {
+
+	/* You may uncomment the following line to test valgrind's integration. */
+	/* void *p = malloc(16); */
+
 	hello_me_test();
 	return EXIT_SUCCESS;
 }
