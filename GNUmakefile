@@ -17,7 +17,7 @@ OBJS_NO_TDD = main.o
 
 apptest1.t: apptest2.to
 apptest1_TEST_LIBS=-lm
-apptest1_TIMEOUT=1s
+apptest1_TIMEOUT_MULT=2
 
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
@@ -68,12 +68,12 @@ $(APP): $(ALL_OBJS) $(TESTS)
 	gcc $(CFLAGS) -MM -MP -MT $*.o $*.c > $*.d
 
 %.ts: %.t
-	@$(eval CALL_TIMEOUT=$(firstword $($(@:.ts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
+	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.ts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	timeout $(CALL_TIMEOUT) ./$*.t && touch $*.ts
 
 %.tts: %.tt $(APP)
-	@$(eval CALL_TIMEOUT=$(firstword $($(@:.tts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
+	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.tts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	timeout $(CALL_TIMEOUT) ./$*.tt && touch $*.tts
 
