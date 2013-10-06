@@ -29,6 +29,14 @@ ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
 # ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
 
+# Arithmetic taken from this amazing article by John Graham-Cumming:
+# http://www.cmcrossroads.com/article/learning-gnu-make-functions-arithmetic
+16 := x x x x x x x x x x x x x x x
+input_int := $(foreach a,$(16),$(foreach b,$(16),$(foreach c,$(16),$(16))))
+decode = $(words $1)
+encode = $(wordlist 1,$1,$(input_int))
+multiply = $(call decode,$(foreach a,$(call encode,$1),$(call encode,$2)))
+
 ifndef DEFAULT_TIMEOUT
 	#Set a DEFAULT_TIMEOUT if user did not set it or erased it.
 	DEFAULT_TIMEOUT=5s
