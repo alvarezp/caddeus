@@ -34,7 +34,7 @@ VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origi
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
 THIS_IS_A_RELEASE = $(shell ls RELEASE 2>/dev/null)
 
-VALGRIND = $(if $(or $(DONT_HAVE_VALGRIND),$(SKIP_VALGRIND),$(THIS_IS_A_RELEASE),,$(VALGRIND_LINE) $(VALGRIND_EXTRA))
+VALGRIND = $(if $(or $(DONT_HAVE_VALGRIND),$(SKIP_VALGRIND),$(THIS_IS_A_RELEASE)),,$(VALGRIND_LINE) $(VALGRIND_EXTRA))
 
 # Arithmetic taken from this amazing article by John Graham-Cumming:
 # http://www.cmcrossroads.com/article/learning-gnu-make-functions-arithmetic
