@@ -69,12 +69,12 @@ $(APP): $(ALL_OBJS) $(TESTS)
 
 %.ts: %.t
 	@$(eval CALL_TIMEOUT=$(firstword $($(@:.ts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
-	@echo -e '\n'===== $@, running test with a $(CALL_TIMEOUT) timeout...
+	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	timeout $(CALL_TIMEOUT) ./$*.t && touch $*.ts
 
 %.tts: %.tt $(APP)
 	@$(eval CALL_TIMEOUT=$(firstword $($(@:.tts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
-	@echo -e '\n'===== $@, running test with a $(CALL_TIMEOUT) timeout...
+	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	timeout $(CALL_TIMEOUT) ./$*.tt && touch $*.tts
 
 %.t.c:
