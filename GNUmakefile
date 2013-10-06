@@ -6,6 +6,8 @@
 
 CFLAGS += -Wall -std=c99 -pedantic-errors -fPIC -ggdb
 
+VALGRIND_EXTRA = --suppressions=/dev/null
+
 .SECONDARY:
 
 APP = app
@@ -25,7 +27,14 @@ APP_TESTS_TS = $(APP_TESTS:.tt=.tts) $(APP_TESTS:.t=.ts)
 TESTS = $(OBJS_TDD:.o=.ts)
 ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
+VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origins=yes
+
 # ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
+
+DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
+THIS_IS_A_RELEASE = $(shell ls RELEASE 2>/dev/null)
+
+VALGRIND = $(if $(or $(DONT_HAVE_VALGRIND),$(SKIP_VALGRIND),$(THIS_IS_A_RELEASE),,$(VALGRIND_LINE) $(VALGRIND_EXTRA))
 
 # Arithmetic taken from this amazing article by John Graham-Cumming:
 # http://www.cmcrossroads.com/article/learning-gnu-make-functions-arithmetic
@@ -68,12 +77,12 @@ $(APP): $(ALL_OBJS) $(TESTS)
 %.ts: %.t
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.ts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
-	timeout $(CALL_TIMEOUT) ./$*.t && touch $*.ts
+	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.t && touch $*.ts
 
 %.tts: %.tt $(APP)
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.tts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
-	timeout $(CALL_TIMEOUT) ./$*.tt && touch $*.tts
+	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.tt && touch $*.tts
 
 %.t.c:
 	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
