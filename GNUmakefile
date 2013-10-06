@@ -68,14 +68,14 @@ $(APP): $(ALL_OBJS) $(TESTS)
 	gcc $(CFLAGS) -MM -MP -MT $*.o $*.c > $*.d
 
 %.ts: %.t
-	@$(eval TIMEOUT=$(firstword $($(@:.ts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
-	@echo -e '\n'===== $@, running test with a $(TIMEOUT) timeout...
-	@timeout $(TIMEOUT) ./$*.t && touch $*.ts
+	@$(eval CALL_TIMEOUT=$(firstword $($(@:.ts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
+	@echo -e '\n'===== $@, running test with a $(CALL_TIMEOUT) timeout...
+	@timeout $(CALL_TIMEOUT) ./$*.t && touch $*.ts
 
 %.tts: %.tt $(APP)
-	@$(eval TIMEOUT=$(firstword $($(@:.tts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
-	@echo -e '\n'===== $@, running test with a $(TIMEOUT) timeout...
-	@timeout $(TIMEOUT) ./$*.tt && touch $*.tts
+	@$(eval CALL_TIMEOUT=$(firstword $($(@:.tts=_TIMEOUT)) $(DEFAULT_TIMEOUT)))
+	@echo -e '\n'===== $@, running test with a $(CALL_TIMEOUT) timeout...
+	@timeout $(CALL_TIMEOUT) ./$*.tt && touch $*.tts
 
 %.t.c:
 	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
