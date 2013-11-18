@@ -38,3 +38,4 @@ Features and characteristics
   to the testname.t file.
 * Optional timeout support to kill a test if it cycles.
 * Automatic Valgrind Memcheck usage, if available.
+* Automatic Cppcheck usage if available.
