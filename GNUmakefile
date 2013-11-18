@@ -31,7 +31,7 @@ ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
 VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origins=yes
 
-CPPCHECK_LINE = cppcheck --error-exitcode=1 --quiet
+CPPCHECK_LINE = cppcheck --error-exitcode=1 --std=c99 --quiet
 
 # ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
 
