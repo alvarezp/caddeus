@@ -8,6 +8,8 @@ CFLAGS += -Wall -std=c99 -pedantic-errors -fPIC -ggdb
 
 VALGRIND_EXTRA = --suppressions=/dev/null
 
+#CPPCHECK_EXTRA = --suppress=...
+
 .SECONDARY:
 
 APP = app
@@ -29,12 +31,18 @@ ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
 VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origins=yes
 
+CPPCHECK_LINE = cppcheck --error-exitcode=1 --quiet
+
 # ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
 
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
 THIS_IS_A_RELEASE = $(shell ls RELEASE 2>/dev/null)
 
 VALGRIND = $(if $(or $(DONT_HAVE_VALGRIND),$(SKIP_VALGRIND),$(THIS_IS_A_RELEASE)),,$(VALGRIND_LINE) $(VALGRIND_EXTRA))
+
+DONT_HAVE_CPPCHECK = $(if $(shell which cppcheck),,y)
+
+CPPCHECK = $(if $(or $(DONT_HAVE_CPPCHECK),$(SKIP_CPPCHECK),$(THIS_IS_A_RELEASE)),,$(CPPCHECK_LINE) $(CPPCHECK_EXTRA))
 
 # Arithmetic taken from this amazing article by John Graham-Cumming:
 # http://www.cmcrossroads.com/article/learning-gnu-make-functions-arithmetic
@@ -70,6 +78,7 @@ $(APP): $(ALL_OBJS) $(TESTS)
 # Compile plus generate dependency information.
 %.o: %.c GNUmakefile
 	@echo -e '\n'===== $@, building module...
+	$(CPPCHECK) $*.c
 	gcc $(CFLAGS) -o $*.o -c $*.c
 	@echo -e '\n'===== $@, generating dependency information...
 	gcc $(CFLAGS) -MM -MP -MT $*.o $*.c > $*.d
@@ -94,6 +103,7 @@ $(APP): $(ALL_OBJS) $(TESTS)
 
 %.to: %.t.c GNUmakefile
 	@echo -e '\n'===== $@, building test module...
+	$(CPPCHECK) $*.t.c
 	gcc $(CFLAGS) -o $*.to -c $*.t.c
 	@echo -e '\n'===== $@, generating dependency information...
 	gcc $(CFLAGS) -MM -MP -MT $*.to $*.t.c > $*.t.d
