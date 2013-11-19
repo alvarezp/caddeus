@@ -1,8 +1,27 @@
-caddeus
-=======
+About Caddeus
+=============
 
-This is a sample C project with an already prepared GNUmakefile for TDD
-and strict compilation.
+The quality and security of many C projects solely depend on their developers
+practices. Although there are well known techniques, adopting them is an opt-in
+process. Developers use analyzers only when the need is perceived, only for
+specific program flows and only once. By the time the program proves to have a
+regression, adopting a framework can be a daunting task, up to requiring code
+redesign.
+
+Program correctness over speed is particularly important for libraries.
+Developers that rely on a library can see their debugging process encumbered
+if the library has bugs of its own. As a particularly important case,
+regressions on a library may affect multiple programs, and tests on a program
+may fail because of a library.
+
+By using a TDD-oriented Makefile from the project start, project owners can
+enforce a building paradigm with conventions for automatic analysis and easy
+TDD adoption without running irrelevant tests.
+
+Caddeus is such an attempt.
+
+This repository hosts the Caddeus makefile, but also is a sample C project that
+uses it.
 
 Features and characteristics
 ============================
