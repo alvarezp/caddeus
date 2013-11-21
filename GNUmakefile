@@ -73,7 +73,7 @@ GNUmakefile:
 
 $(APP): $(ALL_OBJS) $(TESTS)
 	@echo -e '\n'===== $@, building app...
-	gcc -o $(APP) $(LIBS) $(OBJS_TDD) $(OBJS_NO_TDD)
+	gcc -o $(APP) $(OBJS_TDD) $(OBJS_NO_TDD) $(LIBS)
 
 # Compile plus generate dependency information.
 %.o: %.c GNUmakefile
