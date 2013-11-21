@@ -27,7 +27,8 @@ apptest1_TIMEOUT_MULT=2
 
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
-APP_TESTS_TS = $(APP_TESTS:.tt=.tts) $(APP_TESTS:.t=.ts)
+APP_TESTS_TS = $(APP_TESTS:.t=.ts)
+APP_TESTS_TTS = $(APP_TESTS:.tt=.tts)
 OBJ_TESTS_TS = $(OBJS_TDD:.o=.ts)
 ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
@@ -64,7 +65,7 @@ endif
 .DEFAULT_GOAL := all
 
 .PHONY : all
-all: $(APP) $(APP_TESTS_TS)
+all: $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
 	@echo "Build completed successfully."
 
 # Pull in dependency info for existing .o and .t files.
