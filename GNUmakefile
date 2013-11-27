@@ -4,7 +4,9 @@
 # Automatic dependency generation adapted from
 # http://www.scottmcpeak.com/autodepend/autodepend.html
 
-CFLAGS += -Wall -std=c99 -pedantic-errors -fPIC -ggdb
+WNO_ERROR = -Wno-error=unused-variable
+
+CFLAGS += -Wall -Wextra -Werror -std=c99 -pedantic-errors $(WNO_ERROR) -fPIC -ggdb
 
 VALGRIND_EXTRA = --suppressions=/dev/null
 
