@@ -46,6 +46,8 @@ DONT_HAVE_CPPCHECK = $(if $(shell which cppcheck),,y)
 
 CPPCHECK = $(if $(or $(DONT_HAVE_CPPCHECK),$(SKIP_CPPCHECK),$(THIS_IS_A_RELEASE)),true '-- skipping Cppcheck --',$(CPPCHECK_LINE) $(CPPCHECK_EXTRA))
 
+CFLAGS := $(if $(THIS_IS_A_RELEASE),-DNDEBUG,) $(CFLAGS)
+
 # Arithmetic taken from this amazing article by John Graham-Cumming:
 # http://www.cmcrossroads.com/article/learning-gnu-make-functions-arithmetic
 16 := x x x x x x x x x x x x x x x
