@@ -27,9 +27,9 @@ apptest1_TIMEOUT_MULT=2
 
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
-APP_TESTS_TS = $(APP_TESTS:.t=.ts)
-APP_TESTS_TTS = $(APP_TESTS:.tt=.tts)
-OBJ_TESTS_TS = $(OBJS_TDD:.o=.ts)
+APP_TESTS_TS = $(patsubst %.t,.caddeus/timestamps/%.ts,$(filter %.t,$(APP_TESTS)))
+APP_TESTS_TTS = $(patsubst %.tt,.caddeus/timestamps/%.tts,$(filter %.tt,$(APP_TESTS)))
+OBJ_TESTS_TS = $(patsubst %.o,.caddeus/timestamps/%.ts,$(OBJS_TDD))
 ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
 VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origins=yes
@@ -89,15 +89,17 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	@mkdir -p .caddeus/dependencies/$(*D)
 	gcc $(CFLAGS) -MM -MP -MT $*.o $*.c > .caddeus/dependencies/$*.d
 
-%.ts: %.t
+.caddeus/timestamps/%.ts: %.t
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.ts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
-	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.t && touch $*.ts
+	@mkdir -p .caddeus/timestamps/$(@D)
+	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.t && touch $@
 
-%.tts: %.tt $(APP)
+.caddeus/timestamps/%.tts: %.tt $(APP)
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.tts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
-	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.tt && touch $*.tts
+	@mkdir -p .caddeus/timestamps/$(@D)
+	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.tt && touch $@
 
 %.t.c:
 	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
@@ -131,8 +133,6 @@ clean:
 	rm -f *.o
 	rm -f *.t
 	rm -f *.to
-	rm -f *.ts
-	rm -f *.tts
 
 .PHONY : force
 force:
