@@ -36,6 +36,8 @@ VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origi
 
 CPPCHECK_LINE = cppcheck --error-exitcode=1 --std=c99 --quiet
 
+CLANG_LINE = clang --analyze -pedantic
+
 # ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
 
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
@@ -46,6 +48,10 @@ VALGRIND = $(if $(or $(DONT_HAVE_VALGRIND),$(SKIP_VALGRIND),$(THIS_IS_A_RELEASE)
 DONT_HAVE_CPPCHECK = $(if $(shell which cppcheck),,y)
 
 CPPCHECK = $(if $(or $(DONT_HAVE_CPPCHECK),$(SKIP_CPPCHECK),$(THIS_IS_A_RELEASE)),true '-- skipping Cppcheck --',$(CPPCHECK_LINE) $(CPPCHECK_EXTRA))
+
+DONT_HAVE_CLANG = $(if $(shell which clang),,y)
+
+CLANG = $(if $(or $(DONT_HAVE_CLANG),$(SKIP_CLANG),$(THIS_IS_A_RELEASE)),true '-- skipping Clang --',$(CLANG_LINE) $(CLANG_EXTRA))
 
 CFLAGS := $(if $(THIS_IS_A_RELEASE),-DNDEBUG,) $(CFLAGS)
 
@@ -84,6 +90,8 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 %.o: %.c GNUmakefile
 	@echo -e '\n'===== $@, building module...
 	$(CPPCHECK) $*.c
+	@mkdir -p .caddeus/clang/$(*D)
+	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.plist $*.c
 	gcc $(CFLAGS) -o $*.o -c $*.c
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/$(*D)
@@ -112,6 +120,8 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 %.to: %.t.c GNUmakefile
 	@echo -e '\n'===== $@, building test module...
 	$(CPPCHECK) $*.t.c
+	@mkdir -p .caddeus/clang/$(*D)
+	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.t.plist $*.t.c
 	gcc $(CFLAGS) -o $*.to -c $*.t.c
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/$(*D)
