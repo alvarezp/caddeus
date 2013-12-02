@@ -25,6 +25,8 @@ apptest1.t: apptest2.to
 apptest1_TEST_LIBS=-lm
 apptest1_TIMEOUT_MULT=2
 
+CLEAN_MORE = apptest2.to
+
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
 APP_TESTS_TS = $(patsubst %.t,.caddeus/timestamps/%.ts,$(filter %.t,$(APP_TESTS)))
@@ -140,9 +142,13 @@ clean:
 	@echo -e '\n'===== Cleaning...
 	rm -f $(APP)
 	rm -fr .caddeus
-	rm -f *.o
-	rm -f *.t
-	rm -f *.to
+	rm -f $(OBJS_NO_TDD)
+	rm -f $(OBJS_TDD)
+	rm -f $(patsubst %.o,%.t,$(OBJS_TDD))
+	rm -f $(patsubst %.o,%.to,$(OBJS_TDD))
+	rm -f $(filter %.t,$(APP_TESTS))
+	rm -f $(patsubst %.t,%.to,$(filter %.t,$(APP_TESTS)))
+	rm -f $(CLEAN_MORE)
 
 .PHONY : force
 force:
