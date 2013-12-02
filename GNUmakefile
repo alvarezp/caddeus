@@ -68,8 +68,8 @@ all: $(APP) $(APP_TESTS_TS)
 	@echo "Build completed successfully."
 
 # Pull in dependency info for existing .o and .t files.
--include $(ALL_OBJS:.o=.d)
--include $(ALL_OBJS:.o=.t.d)
+-include $(patsubst %.o,.caddeus/dependencies/%.d,$(ALL_OBJS))
+-include $(patsubst %.o,.caddeus/dependencies/%.t.d,$(ALL_OBJS))
 
 # All lower targets depend on GNUmakefile so everything rebuilds if GNUmakefile
 # changes.
@@ -85,7 +85,8 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	$(CPPCHECK) $*.c
 	gcc $(CFLAGS) -o $*.o -c $*.c
 	@echo -e '\n'===== $@, generating dependency information...
-	gcc $(CFLAGS) -MM -MP -MT $*.o $*.c > $*.d
+	@mkdir -p .caddeus/dependencies/$(*D)
+	gcc $(CFLAGS) -MM -MP -MT $*.o $*.c > .caddeus/dependencies/$*.d
 
 %.ts: %.t
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.ts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
@@ -110,7 +111,8 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	$(CPPCHECK) $*.t.c
 	gcc $(CFLAGS) -o $*.to -c $*.t.c
 	@echo -e '\n'===== $@, generating dependency information...
-	gcc $(CFLAGS) -MM -MP -MT $*.to $*.t.c > $*.t.d
+	@mkdir -p .caddeus/dependencies/$(*D)
+	gcc $(CFLAGS) -MM -MP -MT $*.to $*.t.c > .caddeus/dependencies/$*.t.d
 
 %.t: %.to %.o
 	@echo -e '\n'===== $@, building test...
@@ -124,8 +126,8 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 clean:
 	@echo -e '\n'===== Cleaning...
 	rm -f $(APP)
+	rm -fr .caddeus
 	rm -f *.o
-	rm -f *.d
 	rm -f *.t
 	rm -f *.to
 	rm -f *.ts
