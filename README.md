@@ -49,7 +49,7 @@ Features and characteristics
   module.c: module.h and included each time make is run.
 * Lower targets depend on GNUmakefile. This causes the whole project
   rebuild if GNUmakefile changes. This ensures that a change on
-  GNUmakefile does not break project build.
+  GNUmakefile does not break project build or build partially.
 * All modifiable parts are together in the top section of the GNUmakefile
   to avoid confusion.
 * Independent libraries can be individually specified for each test
@@ -58,3 +58,7 @@ Features and characteristics
 * Optional timeout support to kill a test if it cycles.
 * Automatic Valgrind Memcheck usage, if available.
 * Automatic Cppcheck usage if available.
+* Automatic Clang static analyzer usage, if available.
+* Automatic definition of NDEBUG on release trees.
+* Automatic overriding of Valgrind, Cppcheck and Clang checks on release
+  trees
