@@ -102,13 +102,13 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 .caddeus/timestamps/%.ts: %.t
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.ts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
-	@mkdir -p .caddeus/timestamps/$(@D)
+	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.t && touch $@
 
 .caddeus/timestamps/%.tts: %.tt $(APP)
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.tts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
-	@mkdir -p .caddeus/timestamps/$(@D)
+	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.tt && touch $@
 
 %.t.c:
