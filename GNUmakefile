@@ -26,7 +26,7 @@ apptest1_TIMEOUT_MULT=2
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
 APP_TESTS_TS = $(APP_TESTS:.tt=.tts) $(APP_TESTS:.t=.ts)
-TESTS = $(OBJS_TDD:.o=.ts)
+OBJ_TESTS_TS = $(OBJS_TDD:.o=.ts)
 ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
 VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origins=yes
@@ -71,7 +71,7 @@ all: $(APP) $(APP_TESTS_TS)
 # changes.
 GNUmakefile:
 
-$(APP): $(ALL_OBJS) $(TESTS)
+$(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	@echo -e '\n'===== $@, building app...
 	gcc -o $(APP) $(OBJS_TDD) $(OBJS_NO_TDD) $(LIBS)
 
