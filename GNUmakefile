@@ -100,7 +100,8 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	gcc $(CFLAGS) -o $*.o -c $*.c
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/$(*D)
-	gcc $(CFLAGS) -MM -MP -MT $*.o $*.c > .caddeus/dependencies/$*.d
+	gcc $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).o:,$*.o:,' \
+	  > .caddeus/dependencies/$*.d
 
 .caddeus/timestamps/%.ts: %.t
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.ts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
@@ -130,7 +131,8 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	gcc $(CFLAGS) -o $*.to -c $*.t.c
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/$(*D)
-	gcc $(CFLAGS) -MM -MP -MT $*.to $*.t.c > .caddeus/dependencies/$*.t.d
+	gcc $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).to:,$*.to:,' \
+	  > .caddeus/dependencies/$*.t.d
 
 %.t: %.to %.o
 	@echo -e '\n'===== $@, building test...
