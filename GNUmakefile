@@ -40,6 +40,9 @@ CPPCHECK_LINE = cppcheck --error-exitcode=1 --std=c99 --quiet
 
 CLANG_LINE = clang --analyze -pedantic
 
+# Disable builtin rules. This lets us avoid all kinds of surprises.
+.SUFFIXES:
+
 # ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
 
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
