@@ -27,6 +27,11 @@ apptest1_TIMEOUT_MULT=2
 
 CLEAN_MORE = apptest2.to
 
+#Strictly speaking you should rebuild your entire project if you change the
+#GNUmakefile, but it can be quite cumbersome if your project is really big
+#and you are debugging or hacking the GNUmakefile.
+REBUILD_ON=GNUmakefile
+
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
 APP_TESTS_TS = $(patsubst %.t,.caddeus/timestamps/%.ts,$(filter %.t,$(APP_TESTS)))
@@ -83,16 +88,16 @@ all: $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
 -include $(patsubst %.o,.caddeus/dependencies/%.d,$(ALL_OBJS))
 -include $(patsubst %.o,.caddeus/dependencies/%.t.d,$(ALL_OBJS))
 
-# All lower targets depend on GNUmakefile so everything rebuilds if GNUmakefile
+# All lower targets depend on $(REBUILD_ON) so everything rebuilds if $(REBUILD_ON)
 # changes.
-GNUmakefile:
+$(REBUILD_ON):
 
 $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	@echo -e '\n'===== $@, building app...
 	gcc -o $(APP) $(OBJS_TDD) $(OBJS_NO_TDD) $(LIBS)
 
 # Compile plus generate dependency information.
-%.o: %.c GNUmakefile
+%.o: %.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building module...
 	$(CPPCHECK) $*.c
 	@mkdir -p .caddeus/clang/$(*D)
@@ -123,7 +128,7 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
 	@false
 
-%.to: %.t.c GNUmakefile
+%.to: %.t.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building test module...
 	$(CPPCHECK) $*.t.c
 	@mkdir -p .caddeus/clang/$(*D)
