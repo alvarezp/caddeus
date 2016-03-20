@@ -1,15 +1,15 @@
 .SECONDARY:
 
 APP = hello
-LIBS =
+#LDLIBS +=
 
 OBJS = hello.o main.o
 
-#To add libraries to a test, use the "unitname/testname_TEST_LIBS" variable:
-#hello/hello_TEST_LIBS=-lm
+#To add libraries to a test, use the "unitname/testname_TEST_LDLIBS" variable:
+#hello/hello_TEST_LDLIBS=-lm
 
 #Same goes to integration test:
-apptest1_TEST_LIBS=-lm
+apptest1_TEST_LDLIBS=-lm
 apptest1_TIMEOUT_MULT=2
 
 CLEAN_MORE =
@@ -104,7 +104,7 @@ $(REBUILD_ON):
 
 $(APP): $(OBJS) $(OBJ_TESTS_TS)
 	@echo -e '\n'===== $@, building app...
-	gcc -o $(APP) $(OBJS) $(LIBS)
+	gcc -o $(APP) $(OBJS) $(LDLIBS)
 
 # Compile plus generate dependency information.
 %.o: %.c $(REBUILD_ON)
@@ -145,7 +145,7 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 .caddeus/testbin/%.t: .caddeus/testobj/%.to
 	@echo -e '\n'===== $@, building test...
 	@mkdir -p $(@D)
-	gcc -o $@ $^ $($*_TEST_LIBS)
+	gcc -o $@ $^ $($*_TEST_LDLIBS)
 
 .PHONY : clean
 clean:
