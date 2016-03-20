@@ -26,11 +26,6 @@ REBUILD_ON=GNUmakefile
 
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
-APP_TESTS_TS = $(patsubst %.t,.caddeus/timestamps/%.ts,$(filter %.t,$(APP_TESTS)))
-APP_TESTS_TTS = $(patsubst %.tt,.caddeus/timestamps/%.tts,$(filter %.tt,$(APP_TESTS)))
-OBJ_TESTS_TS = $(patsubst %.o,.caddeus/timestamps/%.ts,$(OBJS_TDD))
-ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
-
 VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origins=yes
 
 CPPCHECK_LINE = cppcheck --error-exitcode=1 --std=c99 --quiet
@@ -56,6 +51,12 @@ decode = $(words $1)
 encode = $(wordlist 1,$1,$(input_int))
 multiply = $(call decode,$(foreach a,$(call encode,$1),$(call encode,$2)))
 
+
+APP_TESTS_TS = $(patsubst %.t,.caddeus/timestamps/%.ts,$(filter %.t,$(APP_TESTS)))
+APP_TESTS_TTS = $(patsubst %.tt,.caddeus/timestamps/%.tts,$(filter %.tt,$(APP_TESTS)))
+OBJ_TESTS_TS = $(patsubst %.o,.caddeus/timestamps/%.ts,$(OBJS_TDD))
+
+ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
 
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
 THIS_IS_A_RELEASE = $(shell ls RELEASE 2>/dev/null)
