@@ -129,14 +129,14 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 
 .caddeus/testobj/%.to: %.t.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building test module...
-	$(CPPCHECK) $<
+	$(CPPCHECK) -I. $<
 	@mkdir -p .caddeus/clang/$(*D)
-	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.t.plist $<
+	$(CLANG) $(CFLAGS) -I. -o .caddeus/clang/$*.t.plist $<
 	@mkdir -p $(@D)
-	gcc $(CFLAGS) -o $@ -c $<
+	gcc $(CFLAGS) -I. -o $@ -c $<
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/$(*D)
-	gcc $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).to:,$*.to:,' \
+	gcc $(CPPFLAGS) $(CFLAGS) -I. -M $< | sed '1s,^\(.*\).to:,$*.to:,' \
 	  > .caddeus/dependencies/$*.t.d
 
 .caddeus/testbin/%.t: .caddeus/testobj/%.to %.o
