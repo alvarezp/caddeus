@@ -93,6 +93,7 @@ endif
 
 .PHONY : all
 all: $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
+	@echo
 	@echo "Build completed successfully."
 
 # Pull in dependency info for existing .o and .t files.
