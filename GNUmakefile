@@ -99,10 +99,10 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 # Compile plus generate dependency information.
 %.o: %.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building module...
-	$(CPPCHECK) $*.c
+	$(CPPCHECK) $<
 	@mkdir -p .caddeus/clang/$(*D)
-	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.plist $*.c
-	gcc $(CFLAGS) -o $*.o -c $*.c
+	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.plist $<
+	gcc $(CFLAGS) -o $@ -c $<
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/$(*D)
 	gcc $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).o:,$*.o:,' \
@@ -112,13 +112,13 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.ts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
-	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.t && touch $@
+	timeout $(CALL_TIMEOUT) $(VALGRIND) $< && touch $@
 
 .caddeus/timestamps/%.tts: %.tt $(APP)
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.tts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
-	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.tt && touch $@
+	timeout $(CALL_TIMEOUT) $(VALGRIND) $< && touch $@
 
 %.t.c:
 	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
@@ -130,10 +130,10 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 
 %.to: %.t.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building test module...
-	$(CPPCHECK) $*.t.c
+	$(CPPCHECK) $<
 	@mkdir -p .caddeus/clang/$(*D)
-	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.t.plist $*.t.c
-	gcc $(CFLAGS) -o $*.to -c $*.t.c
+	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.t.plist $<
+	gcc $(CFLAGS) -o $@ -c $<
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/$(*D)
 	gcc $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).to:,$*.to:,' \
@@ -141,11 +141,11 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 
 %.t: %.to %.o
 	@echo -e '\n'===== $@, building test...
-	gcc -o $*.t $^ $($(@:.t=_TEST_LIBS))
+	gcc -o $@ $^ $($(@:.t=_TEST_LIBS))
 
 %.t: %.to
 	@echo -e '\n'===== $@, building test...
-	gcc -o $*.t $^ $($(@:.t=_TEST_LIBS))
+	gcc -o $@ $^ $($(@:.t=_TEST_LIBS))
 
 .PHONY : clean
 clean:
