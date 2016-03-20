@@ -82,8 +82,6 @@ DONT_HAVE_CLANG = $(if $(shell which clang),,y)
 
 CLANG = $(if $(or $(DONT_HAVE_CLANG),$(SKIP_CLANG),$(THIS_IS_A_RELEASE)),true '-- skipping Clang --',$(CLANG_LINE) $(CLANG_EXTRA))
 
-CFLAGS := $(if $(THIS_IS_A_RELEASE),-DNDEBUG,) $(CFLAGS)
-
 DEFAULT_TIMEOUT=0
 ifdef TIMEOUT
 	DEFAULT_TIMEOUT=$(TIMEOUT)
