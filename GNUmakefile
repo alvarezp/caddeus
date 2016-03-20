@@ -2,11 +2,13 @@
 
 APP = hello
 #LDLIBS +=
+#LDFLAGS +=
 
 OBJS = hello.o main.o
 
 #To add libraries to a test, use the "unitname/testname_TEST_LDLIBS" variable:
 #hello/hello_TEST_LDLIBS=-lm
+#hello/hello_TEST_LDFLAGS=
 
 #Same goes to integration test:
 apptest1_TEST_LDLIBS=-lm
@@ -104,7 +106,7 @@ $(REBUILD_ON):
 
 $(APP): $(OBJS) $(OBJ_TESTS_TS)
 	@echo -e '\n'===== $@, building app...
-	gcc -o $(APP) $(OBJS) $(LDLIBS)
+	gcc $(LDFLAGS) $(OBJS) -o $(APP) $(LDLIBS)
 
 # Compile plus generate dependency information.
 %.o: %.c $(REBUILD_ON)
@@ -145,7 +147,7 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 .caddeus/testbin/%.t: .caddeus/testobj/%.to
 	@echo -e '\n'===== $@, building test...
 	@mkdir -p $(@D)
-	gcc -o $@ $^ $($*_TEST_LDLIBS)
+	gcc $($*_TEST_LDFLAGS) $^ -o $@ $($*_TEST_LDLIBS)
 
 .PHONY : clean
 clean:
