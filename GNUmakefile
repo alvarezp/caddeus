@@ -152,8 +152,8 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 .PHONY : clean
 clean:
 	@echo -e '\n'===== Cleaning...
-	rm -f $(APP)
 	rm -fr .caddeus
+	rm -f $(APP)
 	rm -f $(OBJS_NO_TDD)
 	rm -f $(OBJS_TDD)
 	rm -f $(CLEAN_MORE)
