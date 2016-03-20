@@ -128,23 +128,24 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
 	@false
 
-%.to: %.t.c $(REBUILD_ON)
+.caddeus/testobj/%.to: %.t.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building test module...
 	$(CPPCHECK) $<
 	@mkdir -p .caddeus/clang/$(*D)
 	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.t.plist $<
+	@mkdir -p $(@D)
 	gcc $(CFLAGS) -o $@ -c $<
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/$(*D)
 	gcc $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).to:,$*.to:,' \
 	  > .caddeus/dependencies/$*.t.d
 
-.caddeus/testbin/%.t: %.to %.o
+.caddeus/testbin/%.t: .caddeus/testobj/%.to %.o
 	@echo -e '\n'===== $@, building test...
 	@mkdir -p $(@D)
 	gcc -o $@ $^ $($*_TEST_LIBS)
 
-.caddeus/testbin/%.t: %.to
+.caddeus/testbin/%.t: .caddeus/testobj/%.to
 	@echo -e '\n'===== $@, building test...
 	@mkdir -p $(@D)
 	gcc -o $@ $^ $($*_TEST_LIBS)
@@ -156,8 +157,6 @@ clean:
 	rm -fr .caddeus
 	rm -f $(OBJS_NO_TDD)
 	rm -f $(OBJS_TDD)
-	rm -f $(patsubst %.o,%.to,$(OBJS_TDD))
-	rm -f $(patsubst %.t,%.to,$(filter %.t,$(APP_TESTS)))
 	rm -f $(CLEAN_MORE)
 
 .PHONY : force
