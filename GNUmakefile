@@ -108,7 +108,7 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	gcc $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).o:,$*.o:,' \
 	  > .caddeus/dependencies/$*.d
 
-.caddeus/timestamps/%.ts: %.t
+.caddeus/timestamps/%.ts: .caddeus/testbin/%.t
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($*_TIMEOUT_MULT) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
@@ -139,12 +139,14 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	gcc $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).to:,$*.to:,' \
 	  > .caddeus/dependencies/$*.t.d
 
-%.t: %.to %.o
+.caddeus/testbin/%.t: %.to %.o
 	@echo -e '\n'===== $@, building test...
+	@mkdir -p $(@D)
 	gcc -o $@ $^ $($*_TEST_LIBS)
 
-%.t: %.to
+.caddeus/testbin/%.t: %.to
 	@echo -e '\n'===== $@, building test...
+	@mkdir -p $(@D)
 	gcc -o $@ $^ $($*_TEST_LIBS)
 
 .PHONY : clean
@@ -154,9 +156,7 @@ clean:
 	rm -fr .caddeus
 	rm -f $(OBJS_NO_TDD)
 	rm -f $(OBJS_TDD)
-	rm -f $(patsubst %.o,%.t,$(OBJS_TDD))
 	rm -f $(patsubst %.o,%.to,$(OBJS_TDD))
-	rm -f $(filter %.t,$(APP_TESTS))
 	rm -f $(patsubst %.t,%.to,$(filter %.t,$(APP_TESTS)))
 	rm -f $(CLEAN_MORE)
 
