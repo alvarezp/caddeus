@@ -1,17 +1,18 @@
 .SECONDARY:
 
 APP = appname
-APP_TESTS = apptest1.t
 LIBS =
 
-OBJS_TDD = hello.o
-OBJS_NO_TDD = main.o
+ALL_OBJS = hello.o main.o
 
-apptest1.t: apptest2.to
+#To add libraries to a test, use the "unitname/testname_TEST_LIBS" variable:
+#hello/hello_TEST_LIBS=-lm
+
+#Same goes to integration test:
 apptest1_TEST_LIBS=-lm
 apptest1_TIMEOUT_MULT=2
 
-CLEAN_MORE = apptest2.to
+CLEAN_MORE =
 
 #These defaults are really aggressive. You may want to tweak them.
 WNO_ERROR = -Wno-error=unused-variable -Wno-error=unused-parameter
@@ -52,11 +53,21 @@ encode = $(wordlist 1,$1,$(input_int))
 multiply = $(call decode,$(foreach a,$(call encode,$1),$(call encode,$2)))
 
 
-APP_TESTS_TS = $(patsubst %.t,.caddeus/timestamps/%.ts,$(filter %.t,$(APP_TESTS)))
-APP_TESTS_TTS = $(patsubst %.tt,.caddeus/timestamps/%.tts,$(filter %.tt,$(APP_TESTS)))
-OBJ_TESTS_TS = $(patsubst %.o,.caddeus/timestamps/%.ts,$(OBJS_TDD))
+APP_TESTS = $(wildcard tests/*.t.c)
+APP_TESTS_OBJ = $(patsubst tests/%.t.c,.caddeus/testobj/%.to,$(APP_TESTS))
+APP_TESTS_BIN = $(patsubst tests/%.t.c,.caddeus/testbin/%.t,$(APP_TESTS))
+APP_TESTS_TS = $(patsubst tests/%.t.c,.caddeus/timestamps/%.ts,$(APP_TESTS))
 
-ALL_OBJS = $(OBJS_TDD) $(OBJS_NO_TDD)
+APP_TESTS_TT = $(wildcard tests/*.tt)
+APP_TESTS_TTS = $(patsubst tests/%.tt,.caddeus/timestamps/%.tts,$(APP_TESTS_TT))
+
+OBJ_TESTS = $(foreach d,$(patsubst %.o,tests/%/*.t.c,$(ALL_OBJS)),$(wildcard $(d)))
+OBJ_TESTS_OBJ = $(patsubst tests/%.t.c,.caddeus/testobj/%.to,$(OBJ_TESTS))
+OBJ_TESTS_BIN = $(patsubst tests/%.t.c,.caddeus/testbin/%.t,$(OBJ_TESTS))
+OBJ_TESTS_TS = $(patsubst tests/%.t.c,.caddeus/timestamps/%.ts,$(OBJ_TESTS))
+
+#Make each ./tests/unitname/testname.t depend on ./unitname.o.
+$(foreach f,$(OBJ_TESTS_BIN),$(call eval,$f:$(word 3,$(subst /, ,$f)).o))
 
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
 THIS_IS_A_RELEASE = $(shell ls RELEASE 2>/dev/null)
@@ -86,7 +97,7 @@ all: $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
 
 # Pull in dependency info for existing .o and .t files.
 -include $(patsubst %.o,.caddeus/dependencies/%.d,$(ALL_OBJS))
--include $(patsubst %.o,.caddeus/dependencies/%.t.d,$(ALL_OBJS))
+-include $(patsubst %.o,.caddeus/dependencies/tests/%.t.d,$(ALL_OBJS))
 
 # All lower targets depend on $(REBUILD_ON) so everything rebuilds if $(REBUILD_ON)
 # changes.
@@ -94,7 +105,7 @@ $(REBUILD_ON):
 
 $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	@echo -e '\n'===== $@, building app...
-	gcc -o $(APP) $(OBJS_TDD) $(OBJS_NO_TDD) $(LIBS)
+	gcc -o $(APP) $(ALL_OBJS) $(LIBS)
 
 # Compile plus generate dependency information.
 %.o: %.c $(REBUILD_ON)
@@ -114,36 +125,23 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $(VALGRIND) $< && touch $@
 
-.caddeus/timestamps/%.tts: %.tt $(APP)
+.caddeus/timestamps/%.tts: tests/%.tt $(APP)
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($*_TIMEOUT_MULT) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $< && touch $@
 
-%.t.c:
-	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
-	@false
-
-%.tt:
-	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
-	@false
-
-.caddeus/testobj/%.to: %.t.c $(REBUILD_ON)
+.caddeus/testobj/%.to: tests/%.t.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building test module...
 	$(CPPCHECK) -I. $<
-	@mkdir -p .caddeus/clang/$(*D)
-	$(CLANG) $(CFLAGS) -I. -o .caddeus/clang/$*.t.plist $<
+	@mkdir -p .caddeus/clang/tests/$(*D)
+	$(CLANG) $(CFLAGS) -I. -o .caddeus/clang/tests/$*.t.plist $<
 	@mkdir -p $(@D)
 	gcc $(CFLAGS) -I. -o $@ -c $<
 	@echo -e '\n'===== $@, generating dependency information...
-	@mkdir -p .caddeus/dependencies/$(*D)
+	@mkdir -p .caddeus/dependencies/tests/$(*D)
 	gcc $(CPPFLAGS) $(CFLAGS) -I. -M $< | sed '1s,^\(.*\).to:,$*.to:,' \
-	  > .caddeus/dependencies/$*.t.d
-
-.caddeus/testbin/%.t: .caddeus/testobj/%.to %.o
-	@echo -e '\n'===== $@, building test...
-	@mkdir -p $(@D)
-	gcc -o $@ $^ $($*_TEST_LIBS)
+	  > .caddeus/dependencies/tests/$*.t.d
 
 .caddeus/testbin/%.t: .caddeus/testobj/%.to
 	@echo -e '\n'===== $@, building test...
@@ -155,8 +153,7 @@ clean:
 	@echo -e '\n'===== Cleaning...
 	rm -fr .caddeus
 	rm -f $(APP)
-	rm -f $(OBJS_NO_TDD)
-	rm -f $(OBJS_TDD)
+	rm -f $(ALL_OBJS)
 	rm -f $(CLEAN_MORE)
 
 .PHONY : force
