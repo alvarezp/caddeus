@@ -54,6 +54,9 @@ decode = $(words $1)
 encode = $(wordlist 1,$1,$(input_int))
 multiply = $(call decode,$(foreach a,$(call encode,$1),$(call encode,$2)))
 
+ifeq ($(.DEFAULT_GOAL),)
+	.DEFAULT_GOAL := tested_$(APP)
+endif
 
 APP_TESTS = $(wildcard tests/*.t.c)
 APP_TESTS_OBJ = $(patsubst tests/%.t.c,.caddeus/testobj/%.to,$(APP_TESTS))
@@ -88,8 +91,6 @@ DEFAULT_TIMEOUT=0
 ifdef TIMEOUT
 	DEFAULT_TIMEOUT=$(TIMEOUT)
 endif
-
-.DEFAULT_GOAL := tested_$(APP)
 
 .PHONY : tested_$(APP)
 tested_$(APP): $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
