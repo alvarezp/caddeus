@@ -1,0 +1,99 @@
+How to use the caddeus GNUmakefile
+===============================
+
+
+STEP 1: The most simple run.
+
+1. Place all your units in the same directory as the caddeus GNUmakefile.
+
+2. Edit the caddeus GNUmakefile:
+   - Set the APP to the application binary name. Ex: APP = myapplication
+   - List your units in the OBJS variable. Ex: OBJS = unitname1.o unitname2.o
+   - List your libraries (if any) in LIBS. Ex: LIBS = -lm -lpthread
+
+3. Run make.
+
+Your project should build but note that the defaults are really aggressive
+and will fail if GCC detects the slightest mistake. Also note that if you
+already have clang and cppcheck installed it will try to use them to search
+for more errors. Use the CFLAGS variable to remove -pedantic-errors,
+-Werror and tweak -std=c99 to -std=gnu99 as you see fit.
+
+If you want to bypass the use of cppcheck invoke make like this:
+
+SKIP_CPPCHECK=1 make
+
+or set SKIP_CPPCHECK=1 at the top of the GNUmakefile.
+
+Same goes for clang:
+
+SKIP_CLANG=1 make
+
+Note that if you have a file called "RELEASE" in the same directory as the
+caddeus GNUmakefile, both cppcheck and clang will be skipped.
+
+
+STEP 2: Add a unit test.
+
+1. Create the directory tests and under it create a directory named after
+   your unit. If you have a unit called unitname.c create the directory
+   tests/unitname.
+
+2. Create a test file called tests/unitname/testid.t.c. Observe the ".t.c"
+   suffix. the "testid" is not currently used for anything in particular.
+   You can use any name you want. The test file should have a main() function
+   and return 0 if the case succeded or whatever else if the test failed.
+ 
+3. If your unit test requires some library to be declared during compilation
+   list them in the variable unitname/testid_TEST_LIBS. Example:
+   unitname/testid_TEST_LIBS=-lm -lpthread -lX11
+   
+4. Run make.
+
+Your unit test will run after the object binary and before the application
+binary. Notice that if you invoke "make" again your test will not run. It will
+only run if you change your source code.
+
+All the rules regarding cppcheck and clang in the section "STEP 1" apply.
+
+Additionaly, if you have Valgrind installed it will be used against your unit
+test file to find memory leaks. You can bypass Valgrind check by invoking make
+like this:
+
+SKIP_VALGRIND=1 make
+
+or by setting SKIP_VALGRIND=1 at the top of the GNUmakefile.
+
+Note that if you have a file called "RELEASE" in the same directory as the
+caddeus GNUmakefile, Valgrind will be skipped but the unit test will still be
+called.
+
+
+STEP 3: Add an application test
+
+1. Create the directory tests.
+
+2. Create a test file called tests/testid.tt. Observe the ".tt" suffix. This
+   file should already be executable and perform whatever code you want to
+   run after building your application binary. It should return 0 if the test
+   succeeded or whatever else if the test failed.
+   
+3. Run make.
+
+Your test will run after the application binary was built. Notice that if you
+invoke "make" again your test will not run. It will only run if the
+application binary changed.
+
+Your test will not be run against Valgrind.
+
+You may also use the ".t.c" suffix for application tests instead of ".tt" by
+placing the test directly under the tests/ directory. The same rules as for
+unit tests apply.
+
+
+=======================================================================
+
+Tweaks:
+
+If there is a RELEASE file, cppcheck, valgrind and clang will be skipped.
+
