@@ -122,13 +122,13 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 
 .caddeus/timestamps/%.ts: .caddeus/testbin/%.t
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($*_TIMEOUT_MULT) 1),$(DEFAULT_TIMEOUT)))
-	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
+	@echo -e '\n'===== running test \"$*\" with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $(VALGRIND) $< && touch $@
 
 .caddeus/timestamps/%.tts: tests/%.tt $(APP)
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($*_TIMEOUT_MULT) 1),$(DEFAULT_TIMEOUT)))
-	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
+	@echo -e '\n'===== running test \"$*\" test with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $< && touch $@
 
