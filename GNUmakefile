@@ -3,7 +3,7 @@
 APP = hello
 LIBS =
 
-ALL_OBJS = hello.o main.o
+OBJS = hello.o main.o
 
 #To add libraries to a test, use the "unitname/testname_TEST_LIBS" variable:
 #hello/hello_TEST_LIBS=-lm
@@ -61,7 +61,7 @@ APP_TESTS_TS = $(patsubst tests/%.t.c,.caddeus/timestamps/%.ts,$(APP_TESTS))
 APP_TESTS_TT = $(wildcard tests/*.tt)
 APP_TESTS_TTS = $(patsubst tests/%.tt,.caddeus/timestamps/%.tts,$(APP_TESTS_TT))
 
-OBJ_TESTS = $(foreach d,$(patsubst %.o,tests/%/*.t.c,$(ALL_OBJS)),$(wildcard $(d)))
+OBJ_TESTS = $(foreach d,$(patsubst %.o,tests/%/*.t.c,$(OBJS)),$(wildcard $(d)))
 OBJ_TESTS_OBJ = $(patsubst tests/%.t.c,.caddeus/testobj/%.to,$(OBJ_TESTS))
 OBJ_TESTS_BIN = $(patsubst tests/%.t.c,.caddeus/testbin/%.t,$(OBJ_TESTS))
 OBJ_TESTS_TS = $(patsubst tests/%.t.c,.caddeus/timestamps/%.ts,$(OBJ_TESTS))
@@ -97,16 +97,16 @@ all: $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
 	@echo "Build completed successfully."
 
 # Pull in dependency info for existing .o and .t files.
--include $(patsubst %.o,.caddeus/dependencies/%.d,$(ALL_OBJS))
--include $(patsubst %.o,.caddeus/dependencies/tests/%.t.d,$(ALL_OBJS))
+-include $(patsubst %.o,.caddeus/dependencies/%.d,$(OBJS))
+-include $(patsubst %.o,.caddeus/dependencies/tests/%.t.d,$(OBJS))
 
 # All lower targets depend on $(REBUILD_ON) so everything rebuilds if $(REBUILD_ON)
 # changes.
 $(REBUILD_ON):
 
-$(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
+$(APP): $(OBJS) $(OBJ_TESTS_TS)
 	@echo -e '\n'===== $@, building app...
-	gcc -o $(APP) $(ALL_OBJS) $(LIBS)
+	gcc -o $(APP) $(OBJS) $(LIBS)
 
 # Compile plus generate dependency information.
 %.o: %.c $(REBUILD_ON)
@@ -154,7 +154,7 @@ clean:
 	@echo -e '\n'===== Cleaning...
 	rm -fr .caddeus
 	rm -f $(APP)
-	rm -f $(ALL_OBJS)
+	rm -f $(OBJS)
 	rm -f $(CLEAN_MORE)
 
 .PHONY : force
