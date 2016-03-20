@@ -1,10 +1,3 @@
-# Copyright (c) 2013, Octavio Alvarez <alvarezp@alvarezp.com>
-# Released under the Simplified BSD License. See the LICENSE file.
-
-# Automatic dependency generation adapted from
-# http://www.scottmcpeak.com/autodepend/autodepend.html
-
-
 .SECONDARY:
 
 APP = app
@@ -21,7 +14,7 @@ apptest1_TIMEOUT_MULT=2
 CLEAN_MORE = apptest2.to
 
 #These defaults are really aggressive. You may want to tweak them.
-WNO_ERROR = -Wno-error=unused-variable
+WNO_ERROR = -Wno-error=unused-variable -Wno-error=unused-parameter
 CFLAGS += -Wall -Wextra -Werror -std=c99 -pedantic-errors $(WNO_ERROR) -fPIC -ggdb
 VALGRIND_EXTRA = --suppressions=/dev/null
 #CPPCHECK_EXTRA = --suppress=...
@@ -48,6 +41,12 @@ CLANG_LINE = clang --analyze -pedantic
 .SUFFIXES:
 
 # ===== MODIFICATIONS SHOULD REALLY NOT BE NEEDED BELOW THIS LINE =====
+
+# Copyright (c) 2013, Octavio Alvarez <alvarezp@alvarezp.com>
+# Released under the Simplified BSD License. See the LICENSE file.
+
+# Automatic dependency generation adapted from
+# http://www.scottmcpeak.com/autodepend/autodepend.html
 
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
 THIS_IS_A_RELEASE = $(shell ls RELEASE 2>/dev/null)
