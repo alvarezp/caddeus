@@ -4,13 +4,6 @@
 # Automatic dependency generation adapted from
 # http://www.scottmcpeak.com/autodepend/autodepend.html
 
-WNO_ERROR = -Wno-error=unused-variable
-
-CFLAGS += -Wall -Wextra -Werror -std=c99 -pedantic-errors $(WNO_ERROR) -fPIC -ggdb
-
-VALGRIND_EXTRA = --suppressions=/dev/null
-
-#CPPCHECK_EXTRA = --suppress=...
 
 .SECONDARY:
 
@@ -26,6 +19,12 @@ apptest1_TEST_LIBS=-lm
 apptest1_TIMEOUT_MULT=2
 
 CLEAN_MORE = apptest2.to
+
+#These defaults are really aggressive. You may want to tweak them.
+WNO_ERROR = -Wno-error=unused-variable
+CFLAGS += -Wall -Wextra -Werror -std=c99 -pedantic-errors $(WNO_ERROR) -fPIC -ggdb
+VALGRIND_EXTRA = --suppressions=/dev/null
+#CPPCHECK_EXTRA = --suppress=...
 
 #Strictly speaking you should rebuild your entire project if you change the
 #GNUmakefile, but it can be quite cumbersome if your project is really big
