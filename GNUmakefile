@@ -48,6 +48,15 @@ CLANG_LINE = clang --analyze -pedantic
 # Automatic dependency generation adapted from
 # http://www.scottmcpeak.com/autodepend/autodepend.html
 
+# Arithmetic taken from this amazing article by John Graham-Cumming:
+# http://www.cmcrossroads.com/article/learning-gnu-make-functions-arithmetic
+16 := x x x x x x x x x x x x x x x
+input_int := $(foreach a,$(16),$(foreach b,$(16),$(foreach c,$(16),$(16))))
+decode = $(words $1)
+encode = $(wordlist 1,$1,$(input_int))
+multiply = $(call decode,$(foreach a,$(call encode,$1),$(call encode,$2)))
+
+
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
 THIS_IS_A_RELEASE = $(shell ls RELEASE 2>/dev/null)
 
@@ -62,14 +71,6 @@ DONT_HAVE_CLANG = $(if $(shell which clang),,y)
 CLANG = $(if $(or $(DONT_HAVE_CLANG),$(SKIP_CLANG),$(THIS_IS_A_RELEASE)),true '-- skipping Clang --',$(CLANG_LINE) $(CLANG_EXTRA))
 
 CFLAGS := $(if $(THIS_IS_A_RELEASE),-DNDEBUG,) $(CFLAGS)
-
-# Arithmetic taken from this amazing article by John Graham-Cumming:
-# http://www.cmcrossroads.com/article/learning-gnu-make-functions-arithmetic
-16 := x x x x x x x x x x x x x x x
-input_int := $(foreach a,$(16),$(foreach b,$(16),$(foreach c,$(16),$(16))))
-decode = $(words $1)
-encode = $(wordlist 1,$1,$(input_int))
-multiply = $(call decode,$(foreach a,$(call encode,$1),$(call encode,$2)))
 
 DEFAULT_TIMEOUT=0
 ifdef TIMEOUT
