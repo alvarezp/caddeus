@@ -6,12 +6,12 @@ APP = hello
 
 OBJS = hello.o main.o
 
-#To add libraries to a test, use the "unitname/testname_TEST_LDLIBS" variable:
-#hello/hello_TEST_LDLIBS=-lm
-#hello/hello_TEST_LDFLAGS=
+#To add libraries to a test, use the "unitname/testname_LDLIBS" variable:
+#hello/hello_LDLIBS=-lm
+#hello/hello_LDFLAGS=
 
 #Same goes to integration test:
-apptest1_TEST_LDLIBS=-lm
+apptest1_LDLIBS=-lm
 apptest1_TIMEOUT_MULT=2
 
 CLEAN_MORE =
@@ -148,7 +148,7 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 .caddeus/testbin/%.t: .caddeus/testobj/%.to
 	@echo -e '\n'===== $@, building test...
 	@mkdir -p $(@D)
-	gcc $($*_TEST_LDFLAGS) $^ -o $@ $($*_TEST_LDLIBS)
+	gcc $($*_LDFLAGS) $^ -o $@ $($*_LDLIBS)
 
 .PHONY : clean
 clean:

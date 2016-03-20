@@ -83,7 +83,7 @@ Features and characteristics
   accidental modification.
 
 * Independent libraries can be individually specified for each test
-  by using `testname_TEST_LDLIBS` or `unitname/testname_TEST_LDLIBS` variables,
+  by using `testname_LDLIBS` or `unitname/testname_LDLIBS` variables,
 
 * Optional timeout support to kill a test if it infinite-loops.
 

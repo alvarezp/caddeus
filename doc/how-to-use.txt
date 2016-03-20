@@ -45,8 +45,8 @@ STEP 2: Add a unit test.
    and return 0 if the case succeded or whatever else if the test failed.
  
 3. If your unit test requires some library to be declared during compilation
-   list them in the variable unitname/testid_TEST_LDLIBS. Example:
-   unitname/testid_TEST_LDLIBS=-lm -lpthread -lX11
+   list them in the variable unitname/testid_LDLIBS. Example:
+   unitname/testid_LDLIBS=-lm -lpthread -lX11
    
 4. Run make.
 
