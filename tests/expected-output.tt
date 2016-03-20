@@ -1,0 +1,12 @@
+#!/bin/bash
+
+EXPECTED='Hello world to me!'
+MEASURED=$(./hello)
+
+if [ "$EXPECTED" == "$MEASURED" ]; then
+    echo 'Hello output matches expected string'
+    exit 0
+fi
+
+echo 'Hello output does not match expected string'
+exit 1
