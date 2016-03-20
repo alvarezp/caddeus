@@ -89,10 +89,10 @@ ifdef TIMEOUT
 	DEFAULT_TIMEOUT=$(TIMEOUT)
 endif
 
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := tested_$(APP)
 
-.PHONY : all
-all: $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
+.PHONY : tested_$(APP)
+tested_$(APP): $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
 	@echo
 	@echo "Build completed successfully."
 
