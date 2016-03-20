@@ -1,6 +1,6 @@
 .SECONDARY:
 
-APP = app
+APP = appname
 APP_TESTS = apptest1.t
 LIBS =
 
