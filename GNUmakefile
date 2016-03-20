@@ -99,7 +99,7 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.tts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p .caddeus/timestamps/$(@D)
-	timeout $(CALL_TIMEOUT) $(VALGRIND) ./$*.tt && touch $@
+	timeout $(CALL_TIMEOUT) ./$*.tt && touch $@
 
 %.t.c:
 	@echo -e '\n'===== $@ doesn\'t exist\! Please create one.
