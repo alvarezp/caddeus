@@ -1,6 +1,6 @@
 .SECONDARY:
 
-APP = appname
+APP = hello
 LIBS =
 
 ALL_OBJS = hello.o main.o
