@@ -109,13 +109,13 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 	  > .caddeus/dependencies/$*.d
 
 .caddeus/timestamps/%.ts: %.t
-	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.ts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
+	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($*_TIMEOUT_MULT) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $(VALGRIND) $< && touch $@
 
 .caddeus/timestamps/%.tts: %.tt $(APP)
-	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($(@:.tts=_TIMEOUT_MULT)) 1),$(DEFAULT_TIMEOUT)))
+	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($*_TIMEOUT_MULT) 1),$(DEFAULT_TIMEOUT)))
 	@echo -e '\n'===== $@, running test with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $(VALGRIND) $< && touch $@
@@ -141,11 +141,11 @@ $(APP): $(ALL_OBJS) $(OBJ_TESTS_TS)
 
 %.t: %.to %.o
 	@echo -e '\n'===== $@, building test...
-	gcc -o $@ $^ $($(@:.t=_TEST_LIBS))
+	gcc -o $@ $^ $($*_TEST_LIBS)
 
 %.t: %.to
 	@echo -e '\n'===== $@, building test...
-	gcc -o $@ $^ $($(@:.t=_TEST_LIBS))
+	gcc -o $@ $^ $($*_TEST_LIBS)
 
 .PHONY : clean
 clean:
