@@ -99,7 +99,7 @@ tested_$(APP): $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
 
 # Pull in dependency info for existing .o and .t files.
 -include $(patsubst %.o,.caddeus/dependencies/%.d,$(OBJS))
--include $(patsubst %.o,.caddeus/dependencies/tests/%.t.d,$(OBJS))
+-include $(patsubst .caddeus/testobj/%.to,.caddeus/dependencies/tests/%.t.d,$(OBJ_TESTS_OBJ) $(APP_TESTS_OBJ))
 
 # All lower targets depend on $(REBUILD_ON) so everything rebuilds if $(REBUILD_ON)
 # changes.
@@ -142,7 +142,7 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 	gcc $(CFLAGS) -I. -o $@ -c $<
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/tests/$(*D)
-	gcc $(CPPFLAGS) $(CFLAGS) -I. -M $< | sed '1s,^\(.*\).to:,$*.to:,' \
+	gcc $(CPPFLAGS) $(CFLAGS) -I. -M $< | sed '1s,^\(.*\).t.o:,$@:,' \
 	  > .caddeus/dependencies/tests/$*.t.d
 
 .caddeus/testbin/%.t: .caddeus/testobj/%.to
