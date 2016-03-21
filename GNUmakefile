@@ -161,4 +161,4 @@ clean:
 .PHONY : force
 force:
 	$(MAKE) clean
-	$(MAKE) all
+	$(MAKE)
