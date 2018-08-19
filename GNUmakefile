@@ -21,6 +21,7 @@ WNO_ERROR = -Wno-error=unused-variable -Wno-error=unused-parameter
 CFLAGS += -Wall -Wextra -Werror -std=c99 -pedantic-errors $(WNO_ERROR) -fPIC -ggdb
 VALGRIND_EXTRA = --suppressions=/dev/null
 #CPPCHECK_EXTRA = --suppress=...
+SPLINT_EXTRA = -unrecog -fullinitblock -initallelements
 
 #Strictly speaking you should rebuild your entire project if you change the
 #GNUmakefile, but it can be quite cumbersome if your project is really big
@@ -34,6 +35,8 @@ VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origi
 CPPCHECK_LINE = cppcheck --error-exitcode=1 --std=c99 --quiet
 
 CLANG_LINE = clang --analyze -pedantic
+
+SPLINT_LINE = splint +quiet -weak
 
 # Disable builtin rules. This lets us avoid all kinds of surprises.
 .SUFFIXES:
@@ -87,6 +90,10 @@ DONT_HAVE_CLANG = $(if $(shell which clang),,y)
 
 CLANG = $(if $(or $(DONT_HAVE_CLANG),$(SKIP_CLANG),$(THIS_IS_A_RELEASE)),true '-- skipping Clang --',$(CLANG_LINE) $(CLANG_EXTRA))
 
+DONT_HAVE_SPLINT = $(if $(shell which splint),,y)
+
+SPLINT = $(if $(or $(DONT_HAVE_SPLINT),$(SKIP_SPLINT),$(THIS_IS_A_RELEASE)),true '-- skipping Splint --',$(SPLINT_LINE) $(SPLINT_EXTRA))
+
 DEFAULT_TIMEOUT=0
 ifdef TIMEOUT
 	DEFAULT_TIMEOUT=$(TIMEOUT)
@@ -113,6 +120,7 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 %.o: %.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building module...
 	$(CPPCHECK) $<
+	$(SPLINT) $<
 	@mkdir -p .caddeus/clang/$(*D)
 	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.plist $<
 	gcc $(CFLAGS) -o $@ -c $<
@@ -136,6 +144,7 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 .caddeus/testobj/%.to: tests/%.t.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building test module...
 	$(CPPCHECK) -I. $<
+	$(SPLINT) -I. $<
 	@mkdir -p .caddeus/clang/tests/$(*D)
 	$(CLANG) $(CFLAGS) -I. -o .caddeus/clang/tests/$*.t.plist $<
 	@mkdir -p $(@D)
