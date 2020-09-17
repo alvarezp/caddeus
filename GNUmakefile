@@ -12,7 +12,6 @@ OBJS = hello.o main.o
 
 #Same goes to integration test:
 apptest1_LDLIBS=-lm
-apptest1_TIMEOUT_MULT=2
 
 CLEAN_MORE =
 
@@ -48,14 +47,6 @@ SPLINT_LINE = splint +quiet -weak
 
 # Automatic dependency generation adapted from
 # http://www.scottmcpeak.com/autodepend/autodepend.html
-
-# Arithmetic taken from this amazing article by John Graham-Cumming:
-# http://www.cmcrossroads.com/article/learning-gnu-make-functions-arithmetic
-16 := x x x x x x x x x x x x x x x
-input_int := $(foreach a,$(16),$(foreach b,$(16),$(foreach c,$(16),$(16))))
-decode = $(words $1)
-encode = $(wordlist 1,$1,$(input_int))
-multiply = $(call decode,$(foreach a,$(call encode,$1),$(call encode,$2)))
 
 ifeq ($(.DEFAULT_GOAL),)
 	.DEFAULT_GOAL := tested_$(APP)
@@ -130,13 +121,13 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 	  > .caddeus/dependencies/$*.d
 
 .caddeus/timestamps/%.ts: .caddeus/testbin/%.t
-	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($*_TIMEOUT_MULT) 1),$(DEFAULT_TIMEOUT)))
+	$(eval CALL_TIMEOUT=$(DEFAULT_TIMEOUT))
 	@echo -e '\n'===== running test \"$*\" with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $(VALGRIND) $< && touch $@
 
 .caddeus/timestamps/%.tts: tests/%.tt $(APP)
-	$(eval CALL_TIMEOUT=$(call multiply,$(firstword $($*_TIMEOUT_MULT) 1),$(DEFAULT_TIMEOUT)))
+	$(eval CALL_TIMEOUT=$(DEFAULT_TIMEOUT))
 	@echo -e '\n'===== running test \"$*\" test with timeout=$(CALL_TIMEOUT)...
 	@mkdir -p $(@D)
 	timeout $(CALL_TIMEOUT) $< && touch $@
