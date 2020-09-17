@@ -121,16 +121,14 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 	  > .caddeus/dependencies/$*.d
 
 .caddeus/timestamps/%.ts: .caddeus/testbin/%.t
-	$(eval CALL_TIMEOUT=$(DEFAULT_TIMEOUT))
-	@echo -e '\n'===== running test \"$*\" with timeout=$(CALL_TIMEOUT)...
+	@echo -e '\n'===== running test \"$*\" with timeout=$(DEFAULT_TIMEOUT)...
 	@mkdir -p $(@D)
-	timeout $(CALL_TIMEOUT) $(VALGRIND) $< && touch $@
+	timeout $(DEFAULT_TIMEOUT) $(VALGRIND) $< && touch $@
 
 .caddeus/timestamps/%.tts: tests/%.tt $(APP)
-	$(eval CALL_TIMEOUT=$(DEFAULT_TIMEOUT))
-	@echo -e '\n'===== running test \"$*\" test with timeout=$(CALL_TIMEOUT)...
+	@echo -e '\n'===== running test \"$*\" test with timeout=$(DEFAULT_TIMEOUT)...
 	@mkdir -p $(@D)
-	timeout $(CALL_TIMEOUT) $< && touch $@
+	timeout $(DEFAULT_TIMEOUT) $< && touch $@
 
 .caddeus/testobj/%.to: tests/%.t.c $(REBUILD_ON)
 	@echo -e '\n'===== $@, building test module...
