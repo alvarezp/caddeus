@@ -29,6 +29,8 @@ REBUILD_ON=GNUmakefile
 
 # ===== MODIFICATIONS SHOULD NOT BE NEEDED BELOW THIS LINE =====
 
+CC = gcc
+
 VALGRIND_LINE = valgrind --error-exitcode=255 --leak-check=full -q --track-origins=yes
 
 CPPCHECK_LINE = cppcheck --error-exitcode=1 --std=c99 --quiet
@@ -105,7 +107,7 @@ $(REBUILD_ON):
 
 $(APP): $(OBJS) $(OBJ_TESTS_TS)
 	@echo -e '\n'===== $@, building app...
-	gcc $(LDFLAGS) $(OBJS) -o $(APP) $(LDLIBS)
+	$(CC) $(LDFLAGS) $(OBJS) -o $(APP) $(LDLIBS)
 
 # Compile plus generate dependency information.
 %.o: %.c $(REBUILD_ON)
@@ -114,10 +116,10 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 	$(SPLINT) $<
 	@mkdir -p .caddeus/clang/$(*D)
 	$(CLANG) $(CFLAGS) -o .caddeus/clang/$*.plist $<
-	gcc $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -o $@ -c $<
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/$(*D)
-	gcc $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).o:,$*.o:,' \
+	$(CC) $(CPPFLAGS) $(CFLAGS) -M $< | sed '1s,^\(.*\).o:,$*.o:,' \
 	  > .caddeus/dependencies/$*.d
 
 .caddeus/timestamps/%.ts: .caddeus/testbin/%.t
@@ -137,16 +139,16 @@ $(APP): $(OBJS) $(OBJ_TESTS_TS)
 	@mkdir -p .caddeus/clang/tests/$(*D)
 	$(CLANG) $(CFLAGS) -I. -o .caddeus/clang/tests/$*.t.plist $<
 	@mkdir -p $(@D)
-	gcc $(CFLAGS) -I. -o $@ -c $<
+	$(CC) $(CFLAGS) -I. -o $@ -c $<
 	@echo -e '\n'===== $@, generating dependency information...
 	@mkdir -p .caddeus/dependencies/tests/$(*D)
-	gcc $(CPPFLAGS) $(CFLAGS) -I. -M $< | sed '1s,^\(.*\).t.o:,$@:,' \
+	$(CC) $(CPPFLAGS) $(CFLAGS) -I. -M $< | sed '1s,^\(.*\).t.o:,$@:,' \
 	  > .caddeus/dependencies/tests/$*.t.d
 
 .caddeus/testbin/%.t: .caddeus/testobj/%.to
 	@echo -e '\n'===== $@, building test...
 	@mkdir -p $(@D)
-	gcc $($*_LDFLAGS) $^ -o $@ $($*_LDLIBS)
+	$(CC) $($*_LDFLAGS) $^ -o $@ $($*_LDLIBS)
 
 .PHONY : clean
 clean:
