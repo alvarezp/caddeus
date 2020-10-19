@@ -51,7 +51,7 @@ SPLINT_LINE = splint +quiet -weak
 # http://www.scottmcpeak.com/autodepend/autodepend.html
 
 ifeq ($(.DEFAULT_GOAL),)
-	.DEFAULT_GOAL := tested_$(APP)
+    .DEFAULT_GOAL := $(APP)
 endif
 
 APP_TESTS = $(wildcard tests/*.t.c)
@@ -92,10 +92,15 @@ ifdef TIMEOUT
 	DEFAULT_TIMEOUT=$(TIMEOUT)
 endif
 
-.PHONY : tested_$(APP)
-tested_$(APP): $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
+.PHONY : strict
+strict: $(OBJ_TESTS_TS) $(APP_TESTS_TS) $(APP_TESTS_TTS) $(APP)
 	@echo
-	@echo "Build completed successfully."
+	@echo "Strict build completed successfully."
+
+.PHONY : check
+check: $(APP) $(OBJ_TESTS_TS) $(APP_TESTS_TS) $(APP_TESTS_TTS)
+	@echo
+	@echo "Test suite completed successfully."
 
 # Pull in dependency info for existing .o and .t files.
 -include $(patsubst %.o,.caddeus/dependencies/%.d,$(OBJS))
@@ -105,7 +110,7 @@ tested_$(APP): $(APP) $(APP_TESTS_TTS) $(APP_TESTS_TS)
 # changes.
 $(REBUILD_ON):
 
-$(APP): $(OBJS) $(OBJ_TESTS_TS)
+$(APP): $(OBJS)
 	@echo -e '\n'===== $@, building app...
 	$(CC) $(LDFLAGS) $(OBJS) -o $(APP) $(LDLIBS)
 
