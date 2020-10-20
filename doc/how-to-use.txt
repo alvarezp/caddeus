@@ -64,10 +64,6 @@ SKIP_VALGRIND=1 make
 
 or by setting SKIP_VALGRIND=1 at the top of the GNUmakefile.
 
-Note that if you have a file called "RELEASE" in the same directory as the
-caddeus GNUmakefile, Valgrind will be skipped but the unit test will still be
-called.
-
 
 STEP 3: Add an application test
 
@@ -89,11 +85,3 @@ Your test will not be run against Valgrind.
 You may also use the ".t.c" suffix for application tests instead of ".tt" by
 placing the test directly under the tests/ directory. The same rules as for
 unit tests apply.
-
-
-=======================================================================
-
-Tweaks:
-
-If there is a RELEASE file, cppcheck, valgrind and clang will be skipped.
-

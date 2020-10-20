@@ -71,21 +71,20 @@ OBJ_TESTS_TS = $(patsubst tests/%.t.c,.caddeus/timestamps/%.ts,$(OBJ_TESTS))
 $(foreach f,$(OBJ_TESTS_BIN),$(call eval,$f:$(word 3,$(subst /, ,$f)).o))
 
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
-THIS_IS_A_RELEASE = $(shell ls RELEASE 2>/dev/null)
 
-VALGRIND = $(if $(or $(DONT_HAVE_VALGRIND),$(SKIP_VALGRIND),$(THIS_IS_A_RELEASE)),,$(VALGRIND_LINE) $(VALGRIND_EXTRA))
+VALGRIND = $(if $(or $(DONT_HAVE_VALGRIND),$(SKIP_VALGRIND)),,$(VALGRIND_LINE) $(VALGRIND_EXTRA))
 
 DONT_HAVE_CPPCHECK = $(if $(shell which cppcheck),,y)
 
-CPPCHECK = $(if $(or $(DONT_HAVE_CPPCHECK),$(SKIP_CPPCHECK),$(THIS_IS_A_RELEASE)),true '-- skipping Cppcheck --',$(CPPCHECK_LINE) $(CPPCHECK_EXTRA))
+CPPCHECK = $(if $(or $(DONT_HAVE_CPPCHECK),$(SKIP_CPPCHECK)),true '-- skipping Cppcheck --',$(CPPCHECK_LINE) $(CPPCHECK_EXTRA))
 
 DONT_HAVE_CLANG = $(if $(shell which clang),,y)
 
-CLANG = $(if $(or $(DONT_HAVE_CLANG),$(SKIP_CLANG),$(THIS_IS_A_RELEASE)),true '-- skipping Clang --',$(CLANG_LINE) $(CLANG_EXTRA))
+CLANG = $(if $(or $(DONT_HAVE_CLANG),$(SKIP_CLANG)),true '-- skipping Clang --',$(CLANG_LINE) $(CLANG_EXTRA))
 
 DONT_HAVE_SPLINT = $(if $(shell which splint),,y)
 
-SPLINT = $(if $(or $(DONT_HAVE_SPLINT),$(SKIP_SPLINT),$(THIS_IS_A_RELEASE)),true '-- skipping Splint --',$(SPLINT_LINE) $(SPLINT_EXTRA))
+SPLINT = $(if $(or $(DONT_HAVE_SPLINT),$(SKIP_SPLINT)),true '-- skipping Splint --',$(SPLINT_LINE) $(SPLINT_EXTRA))
 
 DEFAULT_TIMEOUT=0
 ifdef TIMEOUT
