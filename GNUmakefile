@@ -11,7 +11,7 @@ OBJS = hello.o main.o
 #hello/hello_LDFLAGS=
 
 #Same goes to integration test:
-apptest1_LDLIBS=-lm
+#apptest1_LDLIBS=-lm
 
 CLEAN_MORE =
 
