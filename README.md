@@ -93,5 +93,3 @@ Features and characteristics
 
 * Automatic Clang static analyzer usage, if installed.
 
-* Automatic overriding of Valgrind, Cppcheck and Clang checks on release
-  trees.
