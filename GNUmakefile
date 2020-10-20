@@ -102,6 +102,13 @@ check: $(APP) $(OBJ_TESTS_TS) $(APP_TESTS_TS) $(APP_TESTS_TTS)
 	@echo
 	@echo "Test suite completed successfully."
 
+.PHONY : cheat
+cheat:
+	mkdir -p $(foreach ts,$(OBJ_TESTS_TS) $(APP_TESTS_TS) $(APP_TESTS_TTS),$(dir $(ts)))
+	touch $(foreach ts,$(OBJ_TESTS_TS) $(APP_TESTS_TS) $(APP_TESTS_TTS),$(ts))
+	@echo
+	@echo "Test suite timestamps generated successfully."
+
 # Pull in dependency info for existing .o and .t files.
 -include $(patsubst %.o,.caddeus/dependencies/%.d,$(OBJS))
 -include $(patsubst .caddeus/testobj/%.to,.caddeus/dependencies/tests/%.t.d,$(OBJ_TESTS_OBJ) $(APP_TESTS_OBJ))
