@@ -68,7 +68,7 @@ OBJ_TESTS_BIN = $(patsubst tests/%.t.c,.caddeus/testbin/%.t,$(OBJ_TESTS))
 OBJ_TESTS_TS = $(patsubst tests/%.t.c,.caddeus/timestamps/%.ts,$(OBJ_TESTS))
 
 #Make each ./tests/unitname/testname.t depend on ./unitname.o.
-$(foreach f,$(OBJ_TESTS_BIN),$(call eval,$f:$(word 3,$(subst /, ,$f)).o))
+$(foreach f,$(OBJ_TESTS_BIN),$(call eval,$f:$(subst ///,.o,$(dir $(subst .caddeus/testbin/, ,$f))//)))
 
 DONT_HAVE_VALGRIND = $(if $(shell which valgrind),,y)
 
