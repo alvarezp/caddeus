@@ -1,3 +1,4 @@
+#include "hello.c"
 #include "hello.h"
 
 #include <assert.h>
